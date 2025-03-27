@@ -11,7 +11,11 @@ Questions?: Hopefully the're answered [here!] //TODO: add link
 4. Connect with your client of choice (port: 12524). This is implementation specific. SAMMI instructions to come soon (tm).
 
 ## Disclaimer
-This software does not enable cheating. It only exposes a read-only version of the game's state for other software. If you make a cheat with this code you suck as a human being, and I'm not liable for your crappy life or its resultant choices.
+To preempt any misuse, an output delay of 300ms is prepended to every outgoing event.
+
+This can be easily accommodated for in OBS if you're interested in synchronizing effects to gameplay. For video, use Render Delay filters. For audio, apply Delay to the appropriate sources in Advanced Audio Properties.
+
+This mod is read-only, so it cannot be used to alter gameplay.
 
 ## API overview
 The mod sends out N types of events based on the state of the game. They are detailed below.
