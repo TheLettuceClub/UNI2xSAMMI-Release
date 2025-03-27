@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<script>
+			let webSocket = new WebSocket('ws://127.0.0.1:12524/');
+			webSocket.onopen = function(e) {
+				console.log("Connected to UNI2 WS");
+				document.getElementById("connect").textContent = "ON";
+			}
+			webSocket.onmessage = function(e) {
+				//console.log("WS recieved: "+e.data);
+				parseIncomingMessage(JSON.parse(e.data));
+			}
+			webSocket.onerror = function(e) {
+				console.log("WS error: "+e);
+				document.getElementById("connect").textContent = "OFF";
+				webSocket.close();
+			}
+			
+			async function parseIncomingMessage(message) {
+				console.log(message);
+				//TODO: this is just fully broken lol
+				switch (message.event) {
+					case "uni2_StateUpdate":
+						const thediv = document.getElementById("stateUpdate");
+						let frameCount = getChildElementById(thediv, "frameCount");
+						frameCount.textContent = message.eventInfo.frameCount;
+						let p1 = getChildElementById(thediv, "p1");
+						fillInFields(p1, message.eventInfo.p1);
+						console.log("p2");
+						let p2 = getChildElementById(thediv, "p2");
+						fillInFields(p2, message.eventInfo.p2);
+						break;
+					
+					case "uni2_HitEvent":
+						const thediv2 = document.getElementById("hitEvent");
+						fillInFields(thediv2, message.eventInfo);
+						break;
+					
+					case "uni2_VorpalEvent":
+						const thediv3 = document.getElementById("guardEvent");
+						fillInFields(thediv3, message.eventInfo);
+						break;
+					
+					case "uni2_RoundEndEvent":
+						const thediv4 = document.getElementById("roundEndEvent");
+						fillInFields(thediv3, message.eventInfo);
+						break;
+				}
+			}
+			
+			function fillInFields(section, eventInfo) {
+				for (let key in eventInfo) {
+					let val = eventInfo[key];
+					//console.log(key +": "+ val);
+					let obj = getChildElementById(section, key);
+					obj.textContent = val;
+				}
+			}
+			
+			function getChildElementById(parent, childId) {
+				for (let i = 0; i < parent.childElementCount; i++) {
+					if (parent.children[i].id === childId) {
+						return parent.children[i];
+					}
+				}
+				return null;
+			}
+			
+			function stop() {
+				webSocket.close();
+			}
+		</script>
+		<style>
+			.float-left {
+				float: left;
+				content-type: dynamic;
+				margin-top: -1%;
+			}
+			.thing-style {
+				content-type: dynamic;
+				margin-top: -1%;
+			}
+		</style>
+	</head>
+	<body>
+		<br>
+		<h1 class="float-left">Connected:&nbsp;</h1><h1 class="thing-style" id="connect">OFF</h1>
+		<br>
+		<div id="stateUpdate">
+			<h2 class="thing-style">State Update:</h2>
+			<br>
+			<p class="float-left">frame:&nbsp;</p><p class="thing-style" id="frameCount">0</p>
+			<div id="p1">
+				<h4>P1:</h4>
+				<br>
+				<p class="float-left">Character ID:&nbsp;</p><p class="float-left" id="CharacterID">0</p>
+				<p class="float-left">, Health:&nbsp;</p><p class="float-left" id="health">0</p>
+				<p class="float-left">, EXS Meter:&nbsp;</p><p class="float-left" id="exsMeter">0</p>
+				<p class="float-left">, State:&nbsp;</p><p class="float-left" id="state">0</p>
+				<p class="float-left">, State Backup:&nbsp;</p><p class="float-left" id="stateBackup">0</p>
+				<p class="float-left">, Pos X:&nbsp;</p><p class="float-left" id="posX">0</p>
+				<p class="float-left">, Pos Y:&nbsp;</p><p  class="thing-style" id="posY">0</p>
+				<br>
+				<p class="float-left">Vorpal:&nbsp;</p><p class="float-left" id="vorpal">0</p>
+				<p class="float-left">, Veil Off:&nbsp;</p><p class="float-left" id="veilOff">0</p>
+				<p class="float-left">, C Viel Off:&nbsp;</p><p class="float-left" id="CVeilOff">0</p>
+				<p class="float-left">, GRD Blocks:&nbsp;</p><p class="thing-style" id="GRDBlocks">0</p>
+				<h5>Inputs:</h5>
+				<p class="float-left">Up:&nbsp;</p><p class="float-left" id="up">0</p>
+				<p class="float-left">, Down:&nbsp;</p><p class="float-left" id="down">0</p>
+				<p class="float-left">, Forwards:&nbsp;</p><p class="float-left" id="forwards">0</p>
+				<p class="float-left">, Back:&nbsp;</p><p class="float-left" id="back">0</p>
+				<p class="float-left">, A:&nbsp;</p><p class="float-left" id="A">0</p>
+				<p class="float-left">, B:&nbsp;</p><p class="float-left" id="B">0</p>
+				<p class="float-left">, C:&nbsp;</p><p class="float-left" id="C">0</p>
+				<p class="float-left">, D:&nbsp;</p><p class="thing-style" id="D">0</p>
+			</div>
+			<div id="p2">
+				<h4>P2:</h4>
+				<br>
+				<p class="float-left">Character ID:&nbsp;</p><p class="float-left" id="CharacterID">0</p>
+				<p class="float-left">, Health:&nbsp;</p><p class="float-left" id="health">0</p>
+				<p class="float-left">, EXS Meter:&nbsp;</p><p class="float-left" id="exsMeter">0</p>
+				<p class="float-left">, State:&nbsp;</p><p class="float-left" id="state">0</p>
+				<p class="float-left">, State Backup:&nbsp;</p><p class="float-left" id="stateBackup">0</p>
+				<p class="float-left">, Pos X:&nbsp;</p><p class="float-left" id="posX">0</p>
+				<p class="float-left">, Pos Y:&nbsp;</p><p  class="thing-style" id="posY">0</p>
+				<br>
+				<p class="float-left">Vorpal:&nbsp;</p><p class="float-left" id="vorpal">0</p>
+				<p class="float-left">, Veil Off:&nbsp;</p><p class="float-left" id="veilOff">0</p>
+				<p class="float-left">, C Viel Off:&nbsp;</p><p class="float-left" id="CVeilOff">0</p>
+				<p class="float-left">, GRD Blocks:&nbsp;</p><p class="thing-style" id="GRDBlocks">0</p>
+				<h5>Inputs:</h5>
+				<p class="float-left">Up:&nbsp;</p><p class="float-left" id="up">0</p>
+				<p class="float-left">, Down:&nbsp;</p><p class="float-left" id="down">0</p>
+				<p class="float-left">, Forwards:&nbsp;</p><p class="float-left" id="forwards">0</p>
+				<p class="float-left">, Back:&nbsp;</p><p class="float-left" id="back">0</p>
+				<p class="float-left">, A:&nbsp;</p><p class="float-left" id="A">0</p>
+				<p class="float-left">, B:&nbsp;</p><p class="float-left" id="B">0</p>
+				<p class="float-left">, C:&nbsp;</p><p class="float-left" id="C">0</p>
+				<p class="float-left">, D:&nbsp;</p><p class="thing-style" id="D">0</p>
+			</div>
+		</div>
+		<br><br>
+		<div id="hitEvent">
+			<h2 class="thing-style">Hit Event:</h2>
+			<br>
+			<p class="float-left">frame:&nbsp;</p><p class="thing-style" id="frameCount">0</p>
+			<br>
+			<p class="float-left">Attacker:&nbsp;</p><p class="float-left" id="attacker">0</p>
+			<p class="float-left">, Defender:&nbsp;</p><p class="float-left" id="defender">0</p>
+			<p class="float-left">, Combo Count:&nbsp;</p><p class="float-left" id="comboCount">0</p>
+			<p class="float-left">, Last Hit Damage:&nbsp;</p><p class="float-left" id="lastHitDamage">0</p>
+			<p class="float-left">, Combo Damage:&nbsp;</p><p class="float-left" id="comboDamage">0</p>
+			<p class="float-left">, Meter Gained:&nbsp;</p><p class="float-left" id="meterGainedInCombo">0</p>
+			<p class="float-left">, Combo Proration:&nbsp;</p><p class="thing-style" id="comboProration">0</p>
+		</div>
+		<br><br>
+		<div id="vorpalEvent">
+			<h2 class="thing-style">Guard Event:</h2>
+			<br>
+			<p class="float-left">frame:&nbsp;</p><p  class="thing-style" id="frameCount">0</p>
+			<br>
+			<p class="float-left">Who Won GRD?:&nbsp;</p><p class="float-left" id="whoWonGRD">0</p>
+			<p class="float-left">, Times Won:&nbsp;</p><p class="thing-style" id="timesWon">0</p>
+		</div>
+		<br><br>
+		<div id="roundEndEvent">
+			<h2 class="thing-style">Round Transition Event:</h2>
+			<br>
+			<p class="float-left">frame:&nbsp;</p><p class="thing-style" id="frameCount">0</p>
+			<br>
+			<p class="float-left">Winner:&nbsp;</p><p class="float-left" id="winner">0</p>
+			<p class="float-left">, Loser:&nbsp;</p><p class="float-left" id="loser">0</p>
+			<p class="float-left">, Reason:&nbsp;</p><p class="thing-style" id="reason">0</p>
+		</div>
+	</body>
+</html>
