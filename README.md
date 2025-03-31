@@ -28,7 +28,7 @@ Each event consists of a JSON object with multiple fields. Tabbing implies a '.'
         * event: "uni2_StateUpdate"
         * eventInfo
             * p1/2
-                * CharacterID (currently broken)
+                * CharacterID
                 * health
                 * exsMeter
                 * state
@@ -46,7 +46,7 @@ Each event consists of a JSON object with multiple fields. Tabbing implies a '.'
 
 #### Hit Event:
 * Abstract: fires every time any character gets hit
-* Notes: On the first hit of any combo, combo count and damage and a few others are still 0 for some reason. Successive combo hits work as expected. Also triggers on knockdown tech with real values so...eh.
+* Notes: During on-hit combos only, two messages with slightly different data in them are sent per logical hit. Usually, the first of those is sufficient. Also fires if the defender doesn't tech.
 * Fields:
     * data
         * event: "uni2_HitEvent"
@@ -60,6 +60,22 @@ Each event consists of a JSON object with multiple fields. Tabbing implies a '.'
             * meterGainedInCombo
             * comboProration
             * frameCount
+
+##### Combo Start Event:
+* Abstract: fires at the start of a combo or blockstring.
+* Notes: Occurs after the first HitEvent in some scenarios due to a timing error. Not necessarily to be relied upon. HitEvents after this are guaranteed to have valid data, though ones before it may as well.
+* Fields:
+    * data
+        * event: "uni2_ComboStartEvent"
+        * eventInfo: empty
+
+##### Combo End Event:
+* Abstract: fires at the end of a combo or blockstring.
+* Notes: Not necessarily to be relied upon. HitEvents after this are not guaranteed to have valid data, though it is possible.
+* Fields:
+    * data
+        * event: "uni2_ComboEndEvent"
+        * eventInfo: empty
 
 #### Vorpal Event:
 * Abstract: fires whenever either character achives Vorpal state (i.e. the TS timer finishes).
