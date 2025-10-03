@@ -59,6 +59,7 @@ Each event consists of a JSON object with multiple fields. Tabbing implies a '.'
             * comboDamage
             * meterGainedInCombo
             * comboProration
+			* comboRecovery
             * frameCount
 
 #### Vorpal Event:
